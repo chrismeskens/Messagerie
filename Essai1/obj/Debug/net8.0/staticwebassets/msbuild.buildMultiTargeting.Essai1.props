@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Essai1.props" />
+</Project>
