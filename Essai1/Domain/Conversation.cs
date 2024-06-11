@@ -34,16 +34,66 @@ public class Conversation
     /// Retrieve the pending answer from the messages if there is one.
     /// </summary>
     /// <returns>The pending answer.</returns>
-    public string GetPendingMessage()
+    public string? GetPendingMessage()
     {
-        string pendingAnswer = "";
+        // string pendingAnswer = "";
+        // foreach (var message in Messages)
+        // {
+        //     if (message.Content.Status == EMessageStatus.PendingAnswer)
+        //     {
+        //         pendingAnswer = message.PendingAnswer;
+        //     }
+        // }
+        // return pendingAnswer;
+
+        
+        return Messages
+            .FirstOrDefault(message => message.Content.Status == EMessageStatus.PendingAnswer)?
+            .PendingAnswer;
+    }
+    
+    public bool GetImportance()
+    {
+        // bool flag = false;
+        // foreach (var message in Messages)
+        // {
+        //     if (message.Content.Importance)
+        //     {
+        //         flag = true;
+        //     }
+        // }
+        // return flag;
+
+        return Messages.Any(message => message.Content.Importance);
+    }
+    
+    public bool GetReadStatus()
+    {
+        bool allMessagesRead = true;
         foreach (var message in Messages)
         {
-            if (message.Content.Status == EMessageStatus.PendingAnswer)
+            if(message.Content.ReadStatus == false)
             {
-                pendingAnswer = message.PendingAnswer;
+                allMessagesRead = false;
             }
         }
-        return pendingAnswer;
+        return allMessagesRead;
+    }
+
+    public Message CreateMessage()
+    {
+        NewMessage = true;
+        return new Message()
+        {
+            Sender = "UserEmail",
+            MessageType = EMessageType.Writen,
+            Selected = true,
+        };
+    }
+
+    public Message CancelNewMessage()
+    {
+        NewMessage = false;
+        return new Message();
     }
 }

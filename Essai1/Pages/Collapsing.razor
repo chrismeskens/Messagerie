@@ -1,5 +1,4 @@
-﻿@using Domain;
-@page "/"
+﻿@page "/"
 
 <h3 style="margin:50px;">Conversation Manager</h3>
 
@@ -12,7 +11,7 @@
         <MudGrid>
             <MudItem xs="5">
                 @* Keeping all the conversations to the left side *@
-                <MudContainer @onclick="()=> conversation.CollapseConversation()" Class="conversationContainer" style="@($"background-color:{SwitchConversationBackGround(conversation.Selected)}")">
+                <MudContainer @onclick="() => conversation.CollapseConversation()" Class="conversationContainer" style="@($"background-color:{SwitchConversationBackGround(conversation.Selected)}")">
                     @* Functions to change background color and collapse conversation *@
                     <MudGrid>
                         @* Placing all elements of the conversation inside the container with a grid *@
@@ -23,7 +22,7 @@
                             </MudText>
                         </MudItem>
                         @{
-                            var pendingAnswer = conversation.GetPendingMessage(); 
+                            var pendingAnswer = conversation.GetPendingMessage();
                         }
                         <MudItem xs="5">
                             @* Displaying pending answer *@
@@ -34,7 +33,7 @@
                             }
                         </MudItem>
                         <MudItem xs="1">
-                            @if (GetImportance(conversation) == true)
+                            @if (conversation.GetImportance())
                             {
                                 @* Importance flag *@
                                 <i class="fa-solid fa-flag"></i>
@@ -45,7 +44,7 @@
                             <MudText Style="margin-top:20px;">
                                 05/06/2024
                             </MudText>
-                            @if (GetReadStatus(conversation) == false)
+                            @if (conversation.GetReadStatus() == false)
                             {
                                 <i class="fa-regular fa-envelope"></i>
                             }
@@ -56,7 +55,8 @@
             <MudItem xs="7">
                 @* Message Pile *@
                 @if (conversation.Selected == true && conversation.Messages != null)
-                {    @* Creating a new message *@
+                {
+                    @* Creating a new message *@
                     <MudStack Spacing="0">
                         @* Last message on the top of the stack *@
                         <MudContainer>
@@ -65,74 +65,21 @@
                                 @* Displaying the button in the container *@
                                 <MudItem xs="10"></MudItem>
                                 <MudItem xs="2">
-                                    <MudButton Variant="Variant.Filled" Color="Color.Surface" Class="ml-auto" Style="margin-bottom:10px;" @onclick="()=>CreateMessage(conversation)">+ New</MudButton> @* Function to show the form to create a new message *@
+                                    <MudButton Variant="Variant.Filled" Color="Color.Surface" Class="ml-auto" Style="margin-bottom:10px;" @onclick="() => CreateMessage(conversation)">+ New</MudButton> @* Function to show the form to create a new message *@
                                 </MudItem>
                             </MudGrid>
                             <MudCollapse Expanded="conversation.NewMessage">
                                 @* The form expands on the click of the button *@
                                 <MudContainer class="messageContainer">
-                                    <EditForm Model="NewMessage" OnSubmit="()=>AddNewMessage(conversation)">
-                                        <MudGrid>
-                                            <MudItem xs="10">
-                                                <MudText Align="Align.Start" Style="margin:20px;">
-                                                    <p>From : @NewMessage.Sender</p>
-                                                    <MudTextField T="string" Label="Subject : " @bind-Value="NewMessage.Content.Subject">@NewMessage.Content.Subject</MudTextField>
-                                                    </MudText>
-                                                </MudItem>
-                                                <MudItem xs="1">
-                                                    <MudText Style="margin:20px;">
-                                                        <p>@NewMessage.CreationDate</p>
-                                                </MudText>
-                                            </MudItem>
-                                        </MudGrid>
-                                        <MudGrid>
-                                            <MudItem xs="6">
-                                                <MudText Align="Align.Start" Style="margin-left:20px;">
-                                                    <MudTextField T="string" Label="To : " @bind-Value="NewMessage.Receiver">@NewMessage.Receiver</MudTextField>
-                                                    </MudText>
-                                                </MudItem>
-                                            </MudGrid>
-                                            <MudPaper Style="margin:30px;">
-                                                <MudText Align="Align.Start" Style="margin-left:20px;">
-                                                    <MudTextField T="string" Label="Message : " Lines="10" DisableUnderLine="true" @bind-Value="NewMessage.Content.Body"><p>@NewMessage.Content.Body</p></MudTextField>
-                                            </MudText>
-                                        </MudPaper>
-                                        <MudPaper Style="margin:30px;">
-                                            <MudText Align="Align.Start" Style="margin-left:20px;">
-                                                <MudTextField T="string" Label="Notities : " Lines="2" DisableUnderLine="true" @bind-value="NewMessage.Content.Notification">@NewMessage.Content.Notification</MudTextField>
-                                                </MudText>
-                                            </MudPaper>
-                                            <MudGrid>
-                                                <MudItem xs="2">
-                                                    <MudButton Variant="Variant.Filled" Color="Color.Surface" ButtonType="ButtonType.Button" @onclick="()=>CancelNewMessage(conversation)" style="margin-bottom:20px;">Cancel</MudButton>
-                                                </MudItem>
-                                                <MudItem xs="6">
-                                                    <MudButton Variant="Variant.Filled" Color="Color.Surface" ButtonType="ButtonType.Submit" style="margin-bottom:20px;">Send</MudButton>
-                                                </MudItem>
-                                                <MudItem xs="4">
-                                                  <MudFileUpload T="IBrowserFile" Context="InputFile" FilesChanged="UploadFile">
-                                                    <ButtonTemplate>
-                                                      <MudButton HtmlTag="label" Color="SetAttachmentColor(Color.Success)" StartIcon="@Icons.Material.Filled.AttachFile" for="@InputFile"></MudButton>
-                                                    </ButtonTemplate>
-                                                  </MudFileUpload>
-                                             <MudButton Variant="Variant.Filled" Color="SetImportanceColor(Color.Warning)" style="margin-bottom:20px; padding:0px;" @onclick="SetImportance"><i class="fa-solid fa-flag"></i></MudButton>
-                                             <MudButton Variant="Variant.Filled" Color="SetPendingColor(Color.Tertiary)" style="margin-bottom:20px; padding:0px;" @onclick="SetPendingAnswer"><i class="fa-solid fa-hourglass-half"></i></MudButton>
-                                         </MudItem>
-                                     </MudGrid>
-                                     <MudCollapse Expanded="NewMessage.Pending">
-                                         <MudDatePicker @bind-Date="@NewMessage.PendingDate" />
-                                         <MudButton Variant="Variant.Text" Color="Color.Default" style="margin-bottom:20px;" @onclick="AddPendingAnswer">OK</MudButton>
-                                         <MudButton Variant="Variant.Text" Color="Color.Default" style="margin-bottom:20px;" @onclick="CancelPendingAnswer">Cancel</MudButton>
-                                     </MudCollapse>
-                                 </EditForm>
-                             </MudContainer>
-                         </MudCollapse>
-                     </MudContainer>
+                                    <NewMessageForm Conversation="conversation" NewMessage="NewMessage"/>
+                                </MudContainer>
+                            </MudCollapse>
+                        </MudContainer>
 
-                     @* Displaying the existing messages *@
-                     @foreach (var message in conversation.Messages)
+                        @* Displaying the existing messages *@
+                        @foreach (var message in conversation.Messages)
                         {
-                            <MudContainer class="messageContainer" @onclick="()=> message.CollapseMessage()" Style="@($"background-color:{SwitchMessageBackGround(message)};")">
+                            <MudContainer class="messageContainer" @onclick="() => message.CollapseMessage()" Style="@($"background-color:{message.SwitchMessageBackGround()};")">
                                 <MudGrid>
                                     @if (message.MessageType == EMessageType.Writen)
                                     {
@@ -177,7 +124,7 @@
                                         </MudText>
                                     </MudItem>
                                 </MudGrid>
-                                <MudDivider />
+                                <MudDivider/>
                                 <MudCollapse Expanded="@message.Selected">
                                     <MudText Style="margin:30px;">
                                         <p>To : @message.Receiver</p>
