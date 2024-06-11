@@ -1,4 +1,6 @@
-﻿namespace Essai1.Domain;
+﻿using System.Drawing;
+
+namespace Essai1.Domain;
 
 public class Message
 {
@@ -34,5 +36,20 @@ public class Message
     {
         Selected = !Selected;
         Content.ReadStatus = true;
+    }
+    
+    public string SwitchMessageBackGround()
+    {
+        if (Selected)
+        {
+            return "#E8F5E9";
+        }
+
+        if (Selected == false && Content.ReadStatus == false)
+        {
+            return "#E8F5E9; border-width:thick;";
+        }
+
+        return "#FFFFFF";
     }
 }
