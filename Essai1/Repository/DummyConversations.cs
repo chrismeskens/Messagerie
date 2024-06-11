@@ -24,24 +24,30 @@ namespace Essai1.Repository
             {
                 Sender = "sender one",
                 Receiver = "receiver one",
-                Subject = "Rappel one",
-                Body = "Some text...",
-                Notification = "Some notification",
                 ReceptionDate = "03/06/2024",
                 MessageType = EMessageType.Spoken,
-                Status = EMessageStatus.Active
+                Content = new MessageContent
+                {
+                    Subject = "Rappel one",
+                    Body = "Some text...",
+                    Notification = "Some notification",
+                    Status = EMessageStatus.Active,
+                }
             },
             new Message()
             {
                 Sender = "sender two",
                 Receiver = "receiver one",
-                Subject = "Rappel one",
-                Body = "Some text...",
-                Notification = "Some notification",
                 ReceptionDate = "05/06/2024",
                 MessageType = EMessageType.Spoken,
-                Status = EMessageStatus.PendingAnswer,
-                PendingAnswer = "Réponse pour le 15/06/2024"
+                PendingAnswer = "Réponse pour le 15/06/2024",
+                Content = new MessageContent
+                {
+                    Subject = "Rappel one",
+                    Body = "Some text...",
+                    Notification = "Some notification",
+                    Status = EMessageStatus.PendingAnswer,
+                }
             }
         };
 
@@ -51,24 +57,30 @@ namespace Essai1.Repository
             {
                 Sender = "sender three",
                 Receiver = "receiver three",
-                Subject = "Rappel Two",
-                Body = "Some text...",
-                Notification = "Some notification",
                 ReceptionDate = "07/06/2024",
                 MessageType = EMessageType.Writen,
-                Status = EMessageStatus.Active,
+                Content = new MessageContent
+                {
+                    Subject = "Rappel Two",
+                    Body = "Some text...",
+                    Notification = "Some notification",
+                    Status = EMessageStatus.Active,
+                }
             },
             new Message()
             {
                 Sender = "sender four",
                 Receiver = "receiver four",
-                Subject = "Rappel Two",
-                Body = "Some text...",
-                Notification = "Some notification",
                 ReceptionDate = "09/06/2024",
                 MessageType = EMessageType.Writen,
-                Status = EMessageStatus.Active,
-                PendingAnswer = ""
+                PendingAnswer = "",
+                Content = new MessageContent
+                {
+                    Subject = "Rappel Two",
+                    Body = "Some text...",
+                    Notification = "Some notification",
+                    Status = EMessageStatus.Active,
+                }
             }
         };
 

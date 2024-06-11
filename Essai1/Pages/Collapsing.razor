@@ -1,8 +1,4 @@
 ﻿@using Domain;
-
-
-
-
 @page "/"
 
 <h3 style="margin:50px;">Conversation Manager</h3>
@@ -16,7 +12,7 @@
         <MudGrid>
             <MudItem xs="5">
                 @* Keeping all the conversations to the left side *@
-                <MudContainer @onclick="()=>CollapseConversation(conversation)" Class="conversationContainer" style="@($"background-color:{SwitchConversationBackGround(conversation.Selected)}")">
+                <MudContainer @onclick="()=> conversation.CollapseConversation()" Class="conversationContainer" style="@($"background-color:{SwitchConversationBackGround(conversation.Selected)}")">
                     @* Functions to change background color and collapse conversation *@
                     <MudGrid>
                         @* Placing all elements of the conversation inside the container with a grid *@
@@ -27,7 +23,7 @@
                             </MudText>
                         </MudItem>
                         @{
-                            var pendingAnswer = GetPendingMessage(conversation); // retrieving the pending answer from the messages if there is one.
+                            var pendingAnswer = conversation.GetPendingMessage(); 
                         }
                         <MudItem xs="5">
                             @* Displaying pending answer *@
@@ -80,7 +76,7 @@
                                             <MudItem xs="10">
                                                 <MudText Align="Align.Start" Style="margin:20px;">
                                                     <p>From : @NewMessage.Sender</p>
-                                                    <MudTextField T="string" Label="Subject : " @bind-Value="NewMessage.Subject">@NewMessage.Subject</MudTextField>
+                                                    <MudTextField T="string" Label="Subject : " @bind-Value="NewMessage.Content.Subject">@NewMessage.Content.Subject</MudTextField>
                                                     </MudText>
                                                 </MudItem>
                                                 <MudItem xs="1">
@@ -98,12 +94,12 @@
                                             </MudGrid>
                                             <MudPaper Style="margin:30px;">
                                                 <MudText Align="Align.Start" Style="margin-left:20px;">
-                                                    <MudTextField T="string" Label="Message : " Lines="10" DisableUnderLine="true" @bind-Value="NewMessage.Body"><p>@NewMessage.Body</p></MudTextField>
+                                                    <MudTextField T="string" Label="Message : " Lines="10" DisableUnderLine="true" @bind-Value="NewMessage.Content.Body"><p>@NewMessage.Content.Body</p></MudTextField>
                                             </MudText>
                                         </MudPaper>
                                         <MudPaper Style="margin:30px;">
                                             <MudText Align="Align.Start" Style="margin-left:20px;">
-                                                <MudTextField T="string" Label="Notities : " Lines="2" DisableUnderLine="true" @bind-value="NewMessage.Notification">@NewMessage.Notification</MudTextField>
+                                                <MudTextField T="string" Label="Notities : " Lines="2" DisableUnderLine="true" @bind-value="NewMessage.Content.Notification">@NewMessage.Content.Notification</MudTextField>
                                                 </MudText>
                                             </MudPaper>
                                             <MudGrid>
@@ -114,11 +110,11 @@
                                                     <MudButton Variant="Variant.Filled" Color="Color.Surface" ButtonType="ButtonType.Submit" style="margin-bottom:20px;">Send</MudButton>
                                                 </MudItem>
                                                 <MudItem xs="4">
-                                                    <MudFileUpload T="IBrowserFile" Context="InputFile" FilesChanged="UploadFile">
-                                                 <ButtonTemplate>
-                                                     <MudButton HtmlTag="label" Color="SetAttachmentColor(Color.Success)" Icon="@Icons.Material.Filled.AttachFile" for="@InputFile"></MudButton>
-                                                 </ButtonTemplate>
-                                             </MudFileUpload>
+                                                  <MudFileUpload T="IBrowserFile" Context="InputFile" FilesChanged="UploadFile">
+                                                    <ButtonTemplate>
+                                                      <MudButton HtmlTag="label" Color="SetAttachmentColor(Color.Success)" StartIcon="@Icons.Material.Filled.AttachFile" for="@InputFile"></MudButton>
+                                                    </ButtonTemplate>
+                                                  </MudFileUpload>
                                              <MudButton Variant="Variant.Filled" Color="SetImportanceColor(Color.Warning)" style="margin-bottom:20px; padding:0px;" @onclick="SetImportance"><i class="fa-solid fa-flag"></i></MudButton>
                                              <MudButton Variant="Variant.Filled" Color="SetPendingColor(Color.Tertiary)" style="margin-bottom:20px; padding:0px;" @onclick="SetPendingAnswer"><i class="fa-solid fa-hourglass-half"></i></MudButton>
                                          </MudItem>
@@ -136,7 +132,7 @@
                      @* Displaying the existing messages *@
                      @foreach (var message in conversation.Messages)
                         {
-                            <MudContainer class="messageContainer" @onclick="()=>CollapseMessage(message)" Style="@($"background-color:{SwitchMessageBackGround(message)};")">
+                            <MudContainer class="messageContainer" @onclick="()=> message.CollapseMessage()" Style="@($"background-color:{SwitchMessageBackGround(message)};")">
                                 <MudGrid>
                                     @if (message.MessageType == EMessageType.Writen)
                                     {
@@ -152,7 +148,7 @@
                                     }
                                     <MudItem xs="4">
                                         <MudText Align="Align.Start" Style="margin:20px;">
-                                            <p>Subject : @message.Subject</p>
+                                            <p>Subject : @message.Content.Subject</p>
                                             <p>From : @message.Sender</p>
                                         </MudText>
                                     </MudItem>
@@ -164,13 +160,13 @@
                                         }
                                     </MudItem>
                                     <MudItem xs="1">
-                                        @if (message.Files != null)
+                                        @if (message.Attachments.Files != null)
                                         {
                                             <i class="fa-solid fa-paperclip"></i>
                                         }
                                     </MudItem>
                                     <MudItem xs="1">
-                                        @if (message.Importance == true)
+                                        @if (message.Content.Importance == true)
                                         {
                                             <i class="fa-solid fa-flag"></i>
                                         }
@@ -185,9 +181,9 @@
                                 <MudCollapse Expanded="@message.Selected">
                                     <MudText Style="margin:30px;">
                                         <p>To : @message.Receiver</p>
-                                        <p>@message.Body</p>
+                                        <p>@message.Content.Body</p>
                                         <p>Notities : </p>
-                                        <p>- @message.Notification</p>
+                                        <p>- @message.Content.Notification</p>
                                     </MudText>
                                 </MudCollapse>
                             </MudContainer>
