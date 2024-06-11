@@ -14,7 +14,7 @@
     @foreach (var conversation in Conversations)
     {
         <MudGrid>
-            <MudItem xs="5">
+            <MudItem xs="12" lg="5">
                 @* Keeping all the conversations to the left side *@
                 <MudContainer @onclick="()=>CollapseConversation(conversation)" Class="conversationContainer" style="@($"background-color:{SwitchConversationBackGround(conversation.Selected)}")">
                     @* Functions to change background color and collapse conversation *@
@@ -57,7 +57,7 @@
                     </MudGrid>
                 </MudContainer>
             </MudItem>
-            <MudItem xs="7">
+            <MudItem xs="12" lg="7">
                 @* Message Pile *@
                 @if (conversation.Selected == true && conversation.Messages != null)
                 {    @* Creating a new message *@
@@ -115,23 +115,23 @@
                                                 </MudItem>
                                                 <MudItem xs="4">
                                                     <MudFileUpload T="IBrowserFile" Context="InputFile" FilesChanged="UploadFile">
-                                                 <ButtonTemplate>
-                                                     <MudButton HtmlTag="label" Color="SetAttachmentColor(Color.Success)" Icon="@Icons.Material.Filled.AttachFile" for="@InputFile"></MudButton>
-                                                 </ButtonTemplate>
-                                             </MudFileUpload>
-                                             <MudButton Variant="Variant.Filled" Color="SetImportanceColor(Color.Warning)" style="margin-bottom:20px; padding:0px;" @onclick="SetImportance"><i class="fa-solid fa-flag"></i></MudButton>
-                                             <MudButton Variant="Variant.Filled" Color="SetPendingColor(Color.Tertiary)" style="margin-bottom:20px; padding:0px;" @onclick="SetPendingAnswer"><i class="fa-solid fa-hourglass-half"></i></MudButton>
-                                         </MudItem>
-                                     </MudGrid>
-                                     <MudCollapse Expanded="NewMessage.Pending">
-                                         <MudDatePicker @bind-Date="@NewMessage.PendingDate" />
-                                         <MudButton Variant="Variant.Text" Color="Color.Default" style="margin-bottom:20px;" @onclick="AddPendingAnswer">OK</MudButton>
-                                         <MudButton Variant="Variant.Text" Color="Color.Default" style="margin-bottom:20px;" @onclick="CancelPendingAnswer">Cancel</MudButton>
-                                     </MudCollapse>
-                                 </EditForm>
-                             </MudContainer>
-                         </MudCollapse>
-                     </MudContainer>
+                                                        <ButtonTemplate>
+                                                            <MudButton Variant="Variant.Filled" Color="SetAttachmentColor(Color.Success)" StartIcon="@Icons.Material.Filled.AttachFile" for="@InputFile"></MudButton>
+                                                        </ButtonTemplate>
+                                                    </MudFileUpload>
+                                                    <MudButton Variant="Variant.Filled" Color="SetImportanceColor(Color.Warning)" style="margin-bottom:20px; padding:0px;" @onclick="SetImportance"><i class="fa-solid fa-flag"></i></MudButton>
+                                                    <MudButton Variant="Variant.Filled" Color="SetPendingColor(Color.Tertiary)" style="margin-bottom:20px; padding:0px;" @onclick="SetPendingAnswer"><i class="fa-solid fa-hourglass-half"></i></MudButton>
+                                                </MudItem>
+                                            </MudGrid>
+                                            <MudCollapse Expanded="NewMessage.Pending">
+                                                <MudDatePicker @bind-Date="@NewMessage.PendingDate" />
+                                                <MudButton Variant="Variant.Text" Color="Color.Default" style="margin-bottom:20px;" @onclick="AddPendingAnswer">OK</MudButton>
+                                                <MudButton Variant="Variant.Text" Color="Color.Default" style="margin-bottom:20px;" @onclick="CancelPendingAnswer">Cancel</MudButton>
+                                            </MudCollapse>
+                                        </EditForm>
+                                    </MudContainer>
+                                </MudCollapse>
+                            </MudContainer>
 
                      @* Displaying the existing messages *@
                      @foreach (var message in conversation.Messages)
